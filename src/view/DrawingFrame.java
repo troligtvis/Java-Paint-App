@@ -14,6 +14,9 @@ import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import controller.PaintController;
+
 import java.text.DecimalFormat;
 
 
@@ -31,9 +34,6 @@ public class DrawingFrame extends JFrame{
 	float sizeVal = 1.0f;
 	
 	public DrawingFrame(){
-		 this.setSize(800, 600);
-         this.setTitle("Java Paint");
-         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
          
          JPanel buttonPanel = new JPanel();
          
@@ -90,33 +90,12 @@ public class DrawingFrame extends JFrame{
          // Position the buttons in the bottom of the frame
          
          this.add(buttonPanel, BorderLayout.SOUTH);
-         
-         // Make the drawing area take up the rest of the frame
-         
-         this.add(new DrawingBoard(), BorderLayout.CENTER);
-         
-         // Show the frame
-         
-         this.setVisible(true);
 	}
 	
 	
 	public JButton btnBuilder(String btnName, int btnFunc){
 		JButton jBtn = new JButton();
-		
-		switch (btnFunc) {
-		case 1:
-			jBtn.setText(btnName);
-			
-			break;
-
-		case 2:
-			break;
-		case 3:
-			break;
-		default:
-			break;
-		}
+		jBtn.setText(btnName);
 		
 		jBtn.addActionListener(new ActionListener() {
 
