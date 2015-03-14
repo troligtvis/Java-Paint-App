@@ -15,6 +15,8 @@ public class Line extends Shape{
 	private Color color;
 	private float shapeThickness;
 	
+	public Line(){}
+	
 	public Line(double x, double y, double x2, double y2, Color color, float shapeThickness) {
 		super(x, y, color, shapeThickness);
 		this.x = x;
@@ -25,6 +27,38 @@ public class Line extends Shape{
 		this.shapeThickness = shapeThickness;
 	}
 	
+	public double getX() {
+		return x;
+	}
+
+	public void setX(double x) {
+		this.x = x;
+	}
+
+	public double getY() {
+		return y;
+	}
+
+	public void setY(double y) {
+		this.y = y;
+	}
+
+	public Color getColor() {
+		return color;
+	}
+
+	public void setColor(Color color) {
+		this.color = color;
+	}
+
+	public float getShapeThickness() {
+		return shapeThickness;
+	}
+
+	public void setShapeThickness(float shapeThickness) {
+		this.shapeThickness = shapeThickness;
+	}
+
 	public double getX2() {
 		return x2;
 	}

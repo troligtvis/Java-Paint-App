@@ -4,12 +4,14 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
-public abstract class Shape {
+public abstract class Shape implements Cloneable {
 
 	private double x;
 	private double y;
 	private Color color;
 	private float shapeThickness;
+	
+	public Shape(){}
 	
 	public Shape(double x, double y, Color color, float shapeThickness){
 		this.x = x;

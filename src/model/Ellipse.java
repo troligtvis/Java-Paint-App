@@ -15,6 +15,8 @@ public class Ellipse extends Shape{
 	private Color color;
 	private float shapeThickness;
 	
+	public Ellipse(){}
+	
 	public Ellipse(double x, double y, double width, double height, Color color, float shapeThickness) {
 		super(x, y, color, shapeThickness);
 		this.x = x;

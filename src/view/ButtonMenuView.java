@@ -12,38 +12,25 @@ public class ButtonMenuView{
 	
 	private JPanel buttonPanel = new JPanel();
 	private Box buttonBox = Box.createHorizontalBox();
-	private JButton btnLine = new JButton();
-	private JButton btnEllipse = new JButton();
-	private JButton btnRect = new JButton();
-	private JButton[] buttonArray = new JButton[3];
 	private JSlider shapeThicknessSlider;
 	private String[] colors = {"Black", "Yellow", "Blue", "Green", "Red"};
 	private JComboBox<String> colorList = new JComboBox(colors);
 	private JLabel thicknessLabel = new JLabel();
+	private String[] shapeNames = {"Line", "Ellipse","Rectangle"};
+	private JComboBox<String> shapeNamesCombBox = new JComboBox(shapeNames);
+	
 	
 	public ButtonMenuView(){
-		btnLine.setText("Line");
-		btnEllipse.setText("Ellipse");
-		btnRect.setText("Rectangle");
+		
 		shapeThicknessSlider = new JSlider(10,20,10);
 		thicknessLabel.setText(" Thickness: "+(shapeThicknessSlider.getValue()/10));
 		colorList.setSelectedIndex(0);
 		
-		//ID for mouselistener
-		btnLine.setName("Line");
-		btnEllipse.setName("Ellipse");
-		btnRect.setName("Rectangle");
-		
 		//Add button to array to get from controller, create listeners
 		
-		buttonArray[0] = btnLine;
-		buttonArray[1] = btnEllipse;
-		buttonArray[2] = btnRect;
 		
 		buttonBox.add(colorList);
-		buttonBox.add(btnLine);
-		buttonBox.add(btnEllipse);
-		buttonBox.add(btnRect);
+		buttonBox.add(shapeNamesCombBox);
 		buttonBox.add(thicknessLabel);
 		buttonBox.add(shapeThicknessSlider);
 		
@@ -54,10 +41,6 @@ public class ButtonMenuView{
 
 	public JPanel getButtonPanel() {
 		return buttonPanel;
-	}
-
-	public JButton[] getButtonArray() {
-		return buttonArray;
 	}
 
 	public JSlider getShapeThicknessSlider() {
@@ -75,6 +58,14 @@ public class ButtonMenuView{
 	public String[] getColors() {
 		return colors;
 	}
-	
+
+	public String[] getShapeNames() {
+		return shapeNames;
+	}
+
+	public JComboBox<String> getShapeNamesCombBox() {
+		return shapeNamesCombBox;
+	}
+
 
 }

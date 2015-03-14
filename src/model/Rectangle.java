@@ -15,6 +15,8 @@ public class Rectangle extends Shape{
 	private Color color;
 	private float shapeThickness;
 	
+	public Rectangle(){}
+	
 	public Rectangle(double x, double y, double width, double height, Color color, float shapeThickness) {
 		super(x, y, color, shapeThickness);
 		this.x = x;
@@ -24,11 +26,42 @@ public class Rectangle extends Shape{
 		this.color = color;
 		this.shapeThickness = shapeThickness;
 	}
+	
+	public double getX() {
+		return x;
+	}
+
+	public void setX(double x) {
+		this.x = x;
+	}
+	
+	public double getY() {
+		return y;
+	}
+
+	public void setY(double y) {
+		this.y = y;
+	}
+
+	public Color getColor() {
+		return color;
+	}
+
+	public void setColor(Color color) {
+		this.color = color;
+	}
+
+	public float getShapeThickness() {
+		return shapeThickness;
+	}
+
+	public void setShapeThickness(float shapeThickness) {
+		this.shapeThickness = shapeThickness;
+	}
 
 	public double getWidth() {
 		return width;
 	}
-
 
 	public void setWidth(double width) {
 		this.width = width;

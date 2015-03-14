@@ -19,6 +19,8 @@ import model.Ellipse;
 import model.Line;
 import model.Shape;
 import model.Rectangle;
+import model.ShapeEnum;
+import model.ShapeFactory;
 import view.ButtonMenuView;
 
 import java.awt.event.*;
@@ -30,7 +32,6 @@ public class PaintController extends JLayeredPane{
 	private static final long serialVersionUID = 1L;
 	
 	private ButtonMenuView btnMenView = new ButtonMenuView();
-	private JButton[] btnArray;
 	private JPanel btnPanel;
 	private MyMouseAdapter myMouseAdapter = null;
 	private int currentShape = 1;
@@ -40,30 +41,33 @@ public class PaintController extends JLayeredPane{
 	private float shapeThicknessVal=1;
 	private DecimalFormat dec = new DecimalFormat("#.##");
 	private JComboBox<String> colorComboBox;
-	private String[] colors;
 	private Color paintColor = Color.BLACK;
+	private ShapeFactory shapeFactory = new ShapeFactory();
+	private JComboBox<String> shapeNameCombBox;
+	private String shapeInUse;
 	
 	public PaintController(){
 		this.setVisible(true);
 		this.setLayout(new BorderLayout());
 		
-		btnArray = btnMenView.getButtonArray();
 		btnPanel = btnMenView.getButtonPanel();
 		shapeThickness = btnMenView.getShapeThicknessSlider();
 		thicknessLabel = btnMenView.getThicknessLabel();
-		colors = btnMenView.getColors();
 		colorComboBox = btnMenView.getColorList();
+		shapeNameCombBox = btnMenView.getShapeNamesCombBox();
+		
 		
 		ListenForSlider lstForSlid = new ListenForSlider();
 		shapeThickness.addChangeListener(lstForSlid);
-		ActionListenForComboBox ActLstForCombBox = new ActionListenForComboBox();
-		colorComboBox.addActionListener(ActLstForCombBox);
+		ActionListenForColorComboBox actLstForColorCombBox = new ActionListenForColorComboBox();
+		colorComboBox.addActionListener(actLstForColorCombBox);
+		ActionListenForShapeComboBox actLstForShapeCombBox = new ActionListenForShapeComboBox();
+		shapeNameCombBox.addActionListener(actLstForShapeCombBox);
 		
 		
 		this.add(btnPanel,BorderLayout.SOUTH);
 		
 		myMouseAdapter = new MyMouseAdapter();
-		setBtnListener();
 		this.setName("Drawing");
         addMouseListener(myMouseAdapter);
         addMouseMotionListener(myMouseAdapter);
@@ -80,12 +84,6 @@ public class PaintController extends JLayeredPane{
     }
 
 	
-	private void setBtnListener(){
-		for(int i=0;i<3;i++){
-			btnArray[i].addMouseListener(myMouseAdapter);
-		}
-	}
-	
 	 private class MyMouseAdapter extends MouseAdapter{
 		 
 		 Point shapeStart, shapeEnd;
@@ -95,23 +93,7 @@ public class PaintController extends JLayeredPane{
 			 String compID = me.getComponent().getName();
 			 
 			 switch (compID) {
-			case "Line":
-				System.out.println("This is a line");
-				currentShape = 1;
-				shapeStart = null;
-				break;
-			case "Ellipse":
-				System.out.println("This is a ellipse");
-				currentShape = 2;
-				shapeStart = null;
-				break;
-				
-			case "Rectangle":
-				System.out.println("This is a rect");
-				currentShape = 3;
-				shapeStart = null;
-				break;
-			case "Drawing":
+		 	case "Drawing":
 				System.out.println("Drawing shape: "+currentShape);
 				shapeStart = new Point(me.getX(), me.getY());
 				shapeEnd = shapeStart;
@@ -125,13 +107,21 @@ public class PaintController extends JLayeredPane{
 		 @Override
 		 public void mouseReleased(MouseEvent me){
 			 if(shapeStart != null){ //Needed to prevent previous cords
-				 switch (currentShape) {
-					case 1:
+				 switch (shapeInUse) {
+					case "Line":
 						//Draw a line
-						shapes.add(new Line(shapeStart.x, shapeStart.y, me.getX(), me.getY(), paintColor, shapeThicknessVal));
+						System.out.println("X1: "+shapeStart.x+" Y1: "+shapeStart.y+" X2: "+me.getX()+" Y2: "+me.getY());
+						Line tempRect = (Line)shapeFactory.getShape(ShapeEnum.LINE); 
+						tempRect.setX(shapeStart.x);
+						tempRect.setY(shapeStart.y);
+						tempRect.setX2(me.getX());
+						tempRect.setY2(me.getY());
+						tempRect.setColor(paintColor);
+						tempRect.setShapeThickness(shapeThicknessVal);
+						shapes.add(tempRect);
 						
 						break;
-					case 2:
+					case "Ellipse":
 						//Draw a ellipse
 						double widthEllipse = Math.abs(shapeStart.x - me.getX());
 		                double heightEllipse = Math.abs(shapeStart.y - me.getY());
@@ -140,7 +130,7 @@ public class PaintController extends JLayeredPane{
 						shapes.add(new Ellipse(xEllipse,yEllipse, widthEllipse, heightEllipse, paintColor, shapeThicknessVal));
 						break;
 						
-					case 3:
+					case "Rectangle":
 						//Draw a rect
 						double width = Math.abs(shapeStart.x - me.getX());
 		                double height = Math.abs(shapeStart.y - me.getY());
@@ -183,7 +173,17 @@ public class PaintController extends JLayeredPane{
 	 }
 	 
 	 
-	 private class ActionListenForComboBox implements ActionListener{
+	 private class ActionListenForShapeComboBox implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			JComboBox<String> tempCb = (JComboBox<String>)e.getSource();
+			shapeInUse = (String) tempCb.getSelectedItem();
+			System.out.println(shapeInUse);
+		}
+	 }
+	 
+	 private class ActionListenForColorComboBox implements ActionListener{
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
