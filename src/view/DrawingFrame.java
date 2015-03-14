@@ -56,7 +56,6 @@ public class DrawingFrame extends JFrame{
          
          // Add the buttons to the box
          
-         theBox.add(brushBut);
          theBox.add(lineBut);
          theBox.add(ellipseBut);
          theBox.add(rectBut);
