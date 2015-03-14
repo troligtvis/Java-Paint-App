@@ -7,9 +7,13 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import model.Ellipse;
 import model.Line;
@@ -18,6 +22,7 @@ import model.Rectangle;
 import view.ButtonMenuView;
 
 import java.awt.event.*;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class PaintController extends JLayeredPane{
@@ -25,12 +30,18 @@ public class PaintController extends JLayeredPane{
 	private static final long serialVersionUID = 1L;
 	
 	private ButtonMenuView btnMenView = new ButtonMenuView();
-	private JButton[] btnArray = new JButton[3];
-	private JPanel btnPanel = new JPanel();
+	private JButton[] btnArray;
+	private JPanel btnPanel;
 	private MyMouseAdapter myMouseAdapter = null;
 	private int currentShape = 1;
 	private JSlider shapeThickness;
-	ArrayList<Shape> shapes = new ArrayList<Shape>();
+	private ArrayList<Shape> shapes = new ArrayList<Shape>();
+	private JLabel thicknessLabel;
+	private float shapeThicknessVal=1;
+	private DecimalFormat dec = new DecimalFormat("#.##");
+	private JComboBox<String> colorComboBox;
+	private String[] colors;
+	private Color paintColor = Color.BLACK;
 	
 	public PaintController(){
 		this.setVisible(true);
@@ -39,6 +50,16 @@ public class PaintController extends JLayeredPane{
 		btnArray = btnMenView.getButtonArray();
 		btnPanel = btnMenView.getButtonPanel();
 		shapeThickness = btnMenView.getShapeThicknessSlider();
+		thicknessLabel = btnMenView.getThicknessLabel();
+		colors = btnMenView.getColors();
+		colorComboBox = btnMenView.getColorList();
+		
+		ListenForSlider lstForSlid = new ListenForSlider();
+		shapeThickness.addChangeListener(lstForSlid);
+		ActionListenForComboBox ActLstForCombBox = new ActionListenForComboBox();
+		colorComboBox.addActionListener(ActLstForCombBox);
+		
+		
 		this.add(btnPanel,BorderLayout.SOUTH);
 		
 		myMouseAdapter = new MyMouseAdapter();
@@ -103,12 +124,11 @@ public class PaintController extends JLayeredPane{
 		 
 		 @Override
 		 public void mouseReleased(MouseEvent me){
-			 float shapeThicknessVal = shapeThickness.getValue();
 			 if(shapeStart != null){ //Needed to prevent previous cords
 				 switch (currentShape) {
 					case 1:
 						//Draw a line
-						shapes.add(new Line(shapeStart.x, shapeStart.y, me.getX(), me.getY(), Color.BLACK, (float)(shapeThicknessVal/10)));
+						shapes.add(new Line(shapeStart.x, shapeStart.y, me.getX(), me.getY(), paintColor, shapeThicknessVal));
 						
 						break;
 					case 2:
@@ -117,7 +137,7 @@ public class PaintController extends JLayeredPane{
 		                double heightEllipse = Math.abs(shapeStart.y - me.getY());
 		                int xEllipse = Math.min(shapeStart.x, me.getX());
                         int yEllipse = Math.min(shapeStart.y, me.getY());
-						shapes.add(new Ellipse(xEllipse,yEllipse, widthEllipse, heightEllipse, Color.BLACK, (float)(shapeThicknessVal/10)));
+						shapes.add(new Ellipse(xEllipse,yEllipse, widthEllipse, heightEllipse, paintColor, shapeThicknessVal));
 						break;
 						
 					case 3:
@@ -126,7 +146,7 @@ public class PaintController extends JLayeredPane{
 		                double height = Math.abs(shapeStart.y - me.getY());
 		                int xRect = Math.min(shapeStart.x, me.getX());
                         int yRect = Math.min(shapeStart.y, me.getY());
-						shapes.add(new Rectangle(xRect,yRect, width, height, Color.BLACK, (float)(shapeThicknessVal/10)));
+						shapes.add(new Rectangle(xRect,yRect, width, height,paintColor, shapeThicknessVal));
 						break;
 					default:
 						break;
@@ -138,6 +158,67 @@ public class PaintController extends JLayeredPane{
 		 
 		 
 	 }
+	 
+	 public void checkWhatColor(String strColor){
+		 switch (strColor) {
+		case "Black":
+			paintColor = Color.BLACK;
+			break;
+		case "Yellow":
+			paintColor = Color.YELLOW;
+			break;
+		case "Blue":
+			paintColor = Color.BLUE;
+			break;
+		case "Green":
+			paintColor = Color.GREEN;
+			break;
+		case "Red":
+			paintColor = Color.RED;
+			break;
+		default:
+			paintColor = Color.BLACK;
+			break;
+		}
+	 }
+	 
+	 
+	 private class ActionListenForComboBox implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			JComboBox<String> tempCb = (JComboBox<String>)e.getSource();
+			String color = (String) tempCb.getSelectedItem();
+			checkWhatColor(color);
+			
+		}
+		 
+	 }
+	 
+     private class ListenForSlider implements ChangeListener{
+     	
+     	// Called when the spinner is changed
+     	
+     	public void stateChanged(ChangeEvent e) {
+     	
+     		// Check if the source of the event was the button
+     	
+     		if(e.getSource() == shapeThickness){
+     	
+     			// Change the value for the label next to the spinner
+     			// Use decimal format to make sure only 2 decimals are ever displayed
+     	
+     			thicknessLabel.setText("  Transparent: " + dec.format(shapeThickness.getValue() * .1) );
+     			
+     			// Set the value for transparency for every shape drawn after
+     			
+     			shapeThicknessVal = (float) (shapeThickness.getValue() * .1);
+     			
+     		}
+     	
+     	}
+     	
+     }
 	
 	
 }
