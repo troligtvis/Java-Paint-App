@@ -1,12 +1,12 @@
 package model;
 
+
+// Factory Design Pattern
 public class ColorFactory {
 
 	public Color getColor(String ColorType){
-		if(ColorType == null){
-			return null;
-		}
-		
+		if(ColorType == null){ return null; }
+
 		if(ColorType.equalsIgnoreCase("Yellow")){
 			return new Yellow();
 		} else if(ColorType.equalsIgnoreCase("Blue")){
