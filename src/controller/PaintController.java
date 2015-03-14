@@ -196,28 +196,15 @@ public class PaintController extends JLayeredPane{
 	 }
 	 
      private class ListenForSlider implements ChangeListener{
-     	
-     	// Called when the spinner is changed
-     	
+    	 
      	public void stateChanged(ChangeEvent e) {
-     	
-     		// Check if the source of the event was the button
-     	
+     		
      		if(e.getSource() == shapeThickness){
      	
-     			// Change the value for the label next to the spinner
-     			// Use decimal format to make sure only 2 decimals are ever displayed
-     	
-     			thicknessLabel.setText("  Transparent: " + dec.format(shapeThickness.getValue() * .1) );
-     			
-     			// Set the value for transparency for every shape drawn after
-     			
+     			thicknessLabel.setText("  Thickness: " + dec.format(shapeThickness.getValue() * .1) );
      			shapeThicknessVal = (float) (shapeThickness.getValue() * .1);
-     			
      		}
-     	
      	}
-     	
      }
 	
 	
