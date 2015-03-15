@@ -1,7 +1,11 @@
 package view;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
 
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -29,8 +33,13 @@ public class JavaMainView  extends JLayeredPane implements Observer{
 	private DrawingFrame drawingFrame;
 	private MenuBarView menuBar;
 	private JPanel menuBarFrame = new JPanel();
-	private JPanel editPanel;
+	private EditPanelView editPanel;
 	private JDialog jDialogEdit = new JDialog();
+	private JSlider thicknessEdit;
+	private JComboBox<String> colorComboBoxEdit;
+	private JCheckBox isFilledEdit;
+	private JButton confirmChangeBtn;
+	private JButton deleteBtn;
 	
 	public JavaMainView(PaintMainModel model){
 		this.model = model;
@@ -40,8 +49,13 @@ public class JavaMainView  extends JLayeredPane implements Observer{
 		menuBar = new MenuBarView();
 		menuBarFrame.add(menuBar);
 		JPanel drawingPanel = drawingFrame;
-		editPanel = new EditPanelView();
 		
+		editPanel = new EditPanelView();
+		thicknessEdit = editPanel.getThickness();
+		colorComboBoxEdit = editPanel.getColorComboBox();
+		isFilledEdit = editPanel.getFillable();
+		confirmChangeBtn = editPanel.getChangeBtn();
+		deleteBtn = editPanel.getRemoveBtn();
 		
 		btnPanel = btnMenView.getButtonPanel();
 		shapeThickness = btnMenView.getShapeThicknessSlider();
@@ -58,13 +72,60 @@ public class JavaMainView  extends JLayeredPane implements Observer{
 	}
 	
 	public void editBox(){
-		jDialogEdit.setSize(400, 100);
+		jDialogEdit.setSize(600, 100);
 		jDialogEdit.setResizable(false);
 		jDialogEdit.setLocationRelativeTo(null);
 		jDialogEdit.getContentPane().add(editPanel, BorderLayout.SOUTH);
 		jDialogEdit.setVisible(true);
 	}
+	
+	public JComboBox<String> getColorComboBoxEdit() {
+		return colorComboBoxEdit;
+	}
 
+	public void setColorComboBoxEdit(JComboBox<String> colorComboBoxEdit) {
+		this.colorComboBoxEdit = colorComboBoxEdit;
+	}
+
+	public JSlider getThicknessEdit() {
+		return thicknessEdit;
+	}
+
+	public void setThicknessEdit(JSlider thicknessEdit) {
+		this.thicknessEdit = thicknessEdit;
+	}
+
+	public JCheckBox getIsFilledEdit() {
+		return isFilledEdit;
+	}
+
+	public void setIsFilledEdit(JCheckBox isFilledEdit) {
+		this.isFilledEdit = isFilledEdit;
+	}
+
+	public JButton getConfirmChangeBtn() {
+		return confirmChangeBtn;
+	}
+
+	public void setConfirmChangeBtn(JButton confirmChangeBtn) {
+		this.confirmChangeBtn = confirmChangeBtn;
+	}
+
+	public JButton getDeleteBtn() {
+		return deleteBtn;
+	}
+
+	public void setDeleteBtn(JButton deleteBtn) {
+		this.deleteBtn = deleteBtn;
+	}
+
+	public JCheckBox getIsFilledNew(){
+		return btnMenView.getFilled();
+	}
+
+	public void setDialogEditValues(Color selectedNameColor, boolean isFilled, float thicknessVal){
+		editPanel.editEditbox(selectedNameColor, isFilled, thicknessVal);
+	}
 
 	public JDialog getjDialogEdit() {
 		return jDialogEdit;
@@ -78,7 +139,6 @@ public class JavaMainView  extends JLayeredPane implements Observer{
 	public PaintMainModel getModel() {
 		return model;
 	}
-
 
 	public void setModel(PaintMainModel model) {
 		this.model = model;

@@ -2,6 +2,7 @@ package view;
 
 import javax.swing.Box;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -18,6 +19,7 @@ public class ButtonMenuView{
 	private JLabel thicknessLabel = new JLabel();
 	private String[] shapeNames = {"Line", "Ellipse","Rectangle"};
 	private JComboBox<String> shapeNamesCombBox = new JComboBox(shapeNames);
+	private JCheckBox filled = new JCheckBox();
 	
 	
 	public ButtonMenuView(){
@@ -26,8 +28,13 @@ public class ButtonMenuView{
 		thicknessLabel.setText(" Thickness: "+(shapeThicknessSlider.getValue()/10));
 		colorList.setSelectedIndex(0);
 		
+		shapeNamesCombBox.setName("New");
+		
+		filled.setSelected(false);
+		filled.setText(" :Fill ");
 		//Add button to array to get from controller, create listeners
 		
+		buttonBox.add(filled);
 		buttonBox.add(colorList);
 		buttonBox.add(shapeNamesCombBox);
 		buttonBox.add(thicknessLabel);
@@ -36,6 +43,14 @@ public class ButtonMenuView{
 		
 		buttonPanel.add(buttonBox);
 		
+	}
+
+	public JCheckBox getFilled() {
+		return filled;
+	}
+
+	public void setFilled(JCheckBox filled) {
+		this.filled = filled;
 	}
 
 	public JPanel getButtonPanel() {

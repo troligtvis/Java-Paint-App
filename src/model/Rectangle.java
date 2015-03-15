@@ -14,6 +14,7 @@ public class Rectangle implements Shape{
 	private double height;
 	private Color color;
 	private float shapeThickness;
+	private boolean isFilled;
 	
 	public Rectangle(){
 		System.out.println("New Rectangle is made");
@@ -80,11 +81,26 @@ public class Rectangle implements Shape{
 		this.shapeThickness = shapeThickness;
 	}
 
+
+	public boolean isFilled() {
+		return isFilled;
+	}
+
+	public void setFilled(boolean isFilled) {
+		this.isFilled = isFilled;
+	}
+
 	@Override
 	public void paint(Graphics2D g) {
 		g.setColor(color);
-		g.setStroke(new BasicStroke(shapeThickness));
-		g.draw(new Rectangle2D.Float((int)x, (int)y, (int)width, (int)height));
+		if(isFilled){
+			g.fill(new Rectangle2D.Float((int)x, (int)y, (int)width, (int)height));
+		}else{
+			g.setStroke(new BasicStroke(shapeThickness));
+			g.draw(new Rectangle2D.Float((int)x, (int)y, (int)width, (int)height));
+		}
+		
+		
 	}
 
 	

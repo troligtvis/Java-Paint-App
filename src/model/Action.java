@@ -6,4 +6,6 @@ public interface Action {
 	
 	public void redo();
 	
+	public void undoWithIndex(int shapePos);
+	
 }

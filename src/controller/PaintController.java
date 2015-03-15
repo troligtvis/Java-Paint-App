@@ -1,11 +1,15 @@
 package controller;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Point;
 
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JMenuBar;
+import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -40,20 +44,26 @@ public class PaintController{
 	private JMenuBar menuBar;
 	private AbstractFactory shapeFactory;
 	private AbstractFactory colorFactory;
-	private JDialog jDialogEdit;
+	private Shape tempShape;
+	private int arrayPos=0;
+	private Color tempPaintColor;
 	
 	public PaintController(){
 		model = new PaintMainModel();
 		mainView = new JavaMainView(model);
 		observers.add(mainView);
 		menuBar = mainView.getMenuBar();
-		jDialogEdit = mainView.getjDialogEdit();
+		
+		ActionListenerEditShape listenerEditShape = new ActionListenerEditShape();
+		mainView.getDeleteBtn().addActionListener(listenerEditShape);
+		mainView.getConfirmChangeBtn().addActionListener(listenerEditShape);
 		
 		
 		setMenuBarItemListeners();
 		ListenForSlider lstForSlid = new ListenForSlider();
 		mainView.getShapeThickness().addChangeListener(lstForSlid);
 		ActionListenForColorComboBox actLstForColorCombBox = new ActionListenForColorComboBox();
+		mainView.getColorComboBoxEdit().addActionListener(actLstForColorCombBox);
 		mainView.getColorComboBox().addActionListener(actLstForColorCombBox);
 		ActionListenForShapeComboBox actLstForShapeCombBox = new ActionListenForShapeComboBox();
 		mainView.getShapeNameCombBox().addActionListener(actLstForShapeCombBox);
@@ -167,25 +177,27 @@ public class PaintController{
 						break;
 					case "Ellipse":
 						//Draw a ellipse
-						Ellipse tempEllipse = (Ellipse) shapeFactory.getClone(ellipse);
+						Shape tempEllipse = (Ellipse) shapeFactory.getClone(ellipse);
 						tempEllipse.setX(Math.min(shapeStart.x, me.getX()));
 						tempEllipse.setY(Math.min(shapeStart.y, me.getY()));
 						tempEllipse.setWidth(Math.abs(shapeStart.x - me.getX()));
 						tempEllipse.setHeight(Math.abs(shapeStart.y - me.getY()));
 						tempEllipse.setColor(paintColor);
 						tempEllipse.setShapeThickness(shapeThicknessVal);
+						tempEllipse.setFilled(mainView.getIsFilledNew().isSelected());
 						model.addShape(tempEllipse);
 						break;
 						
 					case "Rectangle":
 						//Draw a rect
-						Rectangle tempRect = (Rectangle)shapeFactory.getClone(rect);
+						Shape tempRect = (Rectangle)shapeFactory.getClone(rect);
 						tempRect.setX(Math.min(shapeStart.x, me.getX()));
 						tempRect.setY(Math.min(shapeStart.y, me.getY()));
 						tempRect.setWidth(Math.abs(shapeStart.x - me.getX()));
 						tempRect.setHeight(Math.abs(shapeStart.y - me.getY()));
 						tempRect.setColor(paintColor);
 						tempRect.setShapeThickness(shapeThicknessVal);
+						tempRect.setFilled(mainView.getIsFilledNew().isSelected());
 						model.addShape(tempRect);
 						break;
 					default:
@@ -200,19 +212,50 @@ public class PaintController{
 		 public void mouseClicked(MouseEvent me){
 			 int xCord = me.getX();
 			 int yCord = me.getY();
-			 Shape shape;
-			 int pos = 0;
+			 arrayPos = 0;
 			 for(Shape s : model.getShapeList()){
-				 pos++;
+				 arrayPos++;
 				 if((xCord > s.getX() && xCord < (s.getX()+s.getWidth())) && (yCord > s.getY()+menuBar.getHeight() && yCord < s.getY()+s.getHeight()+menuBar.getHeight())){
+					 tempShape = s;
+					 
 					 mainView.editBox();
-					 shape = s;
+					 mainView.setDialogEditValues(tempShape.getColor(), tempShape.isFilled(), tempShape.getShapeThickness());
+					 System.out.println(tempShape.isFilled());
 					 break;
 				 }
 			 }
 			 
 		 }
 	 }
+	 
+	 private class ActionListenerEditShape implements ActionListener{
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JButton tempBtn = (JButton) e.getSource();
+				String btnPressed = tempBtn.getText();
+				
+				switch (btnPressed) {
+				case "Change":
+					Shape tempShape = model.getShapeList().get(arrayPos-1);
+					tempShape.setColor(paintColor);
+					tempShape.setShapeThickness((float)(mainView.getThicknessEdit().getValue() * .1));
+					tempShape.setFilled(mainView.getIsFilledEdit().isSelected());
+					notifyAllObservers();
+					paintColor = tempPaintColor;
+					mainView.getjDialogEdit().dispose();
+					break;
+				case "Remove":
+					model.undoWithIndex(arrayPos-1);
+					notifyAllObservers();
+					mainView.getjDialogEdit().dispose();
+					break;
+
+				default:
+					break;
+				}
+			}
+		}
 	 
 	 
 	 private class ActionListenForShapeComboBox implements ActionListener{
@@ -233,6 +276,8 @@ public class PaintController{
 			@SuppressWarnings("unchecked")
 			JComboBox<String> tempCb = (JComboBox<String>)e.getSource();
 			String color = (String) tempCb.getSelectedItem();
+			String instanceOfCB = tempCb.getName();
+			tempPaintColor = paintColor;
 			switch (color) {
 			case "Black":
 				paintColor = colorFactory.getColor(ShapeColorEnum.BLACK).paint();

@@ -10,6 +10,10 @@ public interface Shape extends Cloneable {
 	public double getY();
 	public double getWidth();
 	public double getHeight();
+	public Color getColor();
+	public float getShapeThickness();
+	public boolean isFilled();
+	public void setFilled(boolean isFilled);
 	public void setX(double X);
 	public void setY(double Y);
 	public void setWidth(double width);

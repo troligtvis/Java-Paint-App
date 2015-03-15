@@ -16,6 +16,10 @@ public class PaintMainModel implements Action{
 		return shapes;
 	}
 	
+	public ArrayList<Shape> getUndo() {
+		return undo;
+	}
+
 	public void addShape(Shape shape){
 		shapes.add(shape);
 	}
@@ -38,6 +42,11 @@ public class PaintMainModel implements Action{
 	public void newCanvas(){
 		shapes.clear();
 		undo.clear();
+	}
+
+	@Override
+	public void undoWithIndex(int shapePos) {
+		undo.add(shapes.remove(shapePos));
 	}
 
 }

@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Rectangle2D;
 
 public class Ellipse implements Shape{
 
@@ -14,6 +15,7 @@ public class Ellipse implements Shape{
 	private double height;
 	private Color color;
 	private float shapeThickness;
+	private boolean isFilled;
 	
 	public Ellipse(){
 		System.out.println("New Ellipse is made");
@@ -83,8 +85,21 @@ public class Ellipse implements Shape{
 	@Override
 	public void paint(Graphics2D g) {
 		g.setColor(color);
-		g.setStroke(new BasicStroke(shapeThickness));
-		g.draw(new Ellipse2D.Float((int)x, (int)y, (int)width, (int)height));
+		if(isFilled){
+			g.fill(new Ellipse2D.Float((int)x, (int)y, (int)width, (int)height));
+		}else{
+			g.setStroke(new BasicStroke(shapeThickness));
+			g.draw(new Ellipse2D.Float((int)x, (int)y, (int)width, (int)height));
+		}
+		
+	}
+
+	public boolean isFilled() {
+		return isFilled;
+	}
+
+	public void setFilled(boolean isFilled) {
+		this.isFilled = isFilled;
 	}
 
 }

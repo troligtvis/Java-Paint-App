@@ -110,4 +110,17 @@ public class Line implements Shape{
 		
 	}
 
+	@Override
+	public boolean isFilled() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void setFilled(boolean isFilled) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
 }
