@@ -8,6 +8,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JMenuBar;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
@@ -24,6 +25,11 @@ import model.ShapeColorEnum;
 import view.JavaMainView;
 
 import java.awt.event.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
@@ -115,8 +121,53 @@ public class PaintController{
 				break;
 			case "Save":
 				//Save canvas, remember to save model so you can resume everything
+				
+				JFileChooser chooser = new JFileChooser();
+				chooser.setCurrentDirectory(new File("C:\\Users\\Dancii\\Desktop"));
+				int retrival = chooser.showSaveDialog(null);
+				
+				if(retrival == JFileChooser.APPROVE_OPTION){
+					ObjectOutputStream oos = null;
+					try{
+						
+					
+						try{
+							FileOutputStream fop = new FileOutputStream(chooser.getSelectedFile()+".save");
+							oos = new ObjectOutputStream(fop);
+							oos.writeObject(model); //Maybe not work
+						}finally{
+							oos.close();
+						}
+					}catch(Exception e1){
+						System.out.println(e1);
+					}
+				}
+				
 				break;
 			case "Load":
+				
+				JFileChooser choose = new JFileChooser();
+				
+				int returnname = choose.showOpenDialog(null);
+				
+				if(returnname == JFileChooser.APPROVE_OPTION){
+					ObjectInputStream ois = null;
+					try{
+						try{
+							FileInputStream fin = new FileInputStream(choose.getSelectedFile().getPath());
+							ois = new ObjectInputStream(fin);
+							model = (PaintMainModel) ois.readObject();
+							mainView.setModel(model);
+							notifyAllObservers();
+						}finally{
+							if(ois!=null){
+								ois.close();
+							}
+						}
+					}catch(Exception e2){
+						System.out.println(e2);
+					}
+				}
 				
 				break;
 			case "Undo":
@@ -204,7 +255,7 @@ public class PaintController{
 						break;
 					} 
 			 }
-			 
+			 System.out.println("drawing shapes");
 			 notifyAllObservers();
 		 }
 		 

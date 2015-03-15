@@ -5,8 +5,9 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
+import java.io.Serializable;
 
-public class Rectangle implements Shape{
+public class Rectangle implements Shape, Serializable{
 
 	private double x;
 	private double y;

@@ -142,6 +142,7 @@ public class JavaMainView  extends JLayeredPane implements Observer{
 
 	public void setModel(PaintMainModel model) {
 		this.model = model;
+		drawingFrame.setModel(model);
 	}
 
 

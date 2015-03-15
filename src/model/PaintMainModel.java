@@ -1,8 +1,9 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class PaintMainModel implements Action{
+public class PaintMainModel implements Action, Serializable{
 	
 	private ArrayList<Shape> shapes;
 	private ArrayList<Shape> undo;

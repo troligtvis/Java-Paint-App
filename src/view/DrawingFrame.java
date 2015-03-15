@@ -28,5 +28,11 @@ public class DrawingFrame extends JPanel{
         	s.paint(g2);
         }
     }
+
+	public void setModel(PaintMainModel model) {
+		this.model = model;
+	}
+	
+	
 	
 }
