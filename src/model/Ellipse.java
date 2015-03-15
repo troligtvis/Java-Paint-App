@@ -46,6 +46,38 @@ public class Ellipse extends Shape{
 		this.height = height;
 	}
 
+	public double getX() {
+		return x;
+	}
+
+	public void setX(double x) {
+		this.x = x;
+	}
+
+	public double getY() {
+		return y;
+	}
+
+	public void setY(double y) {
+		this.y = y;
+	}
+
+	public Color getColor() {
+		return color;
+	}
+
+	public void setColor(Color color) {
+		this.color = color;
+	}
+
+	public float getShapeThickness() {
+		return shapeThickness;
+	}
+
+	public void setShapeThickness(float shapeThickness) {
+		this.shapeThickness = shapeThickness;
+	}
+
 	@Override
 	public void paint(Graphics2D g) {
 		// TODO Auto-generated method stub

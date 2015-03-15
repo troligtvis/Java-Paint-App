@@ -25,7 +25,10 @@ public class StartProgram {
 		frame.setBackground(Color.WHITE);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		frame.getContentPane().add(new PaintController());
+		PaintController paintController = new PaintController();
+		
+		
+		frame.getContentPane().add(paintController.getMainView());
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 	}

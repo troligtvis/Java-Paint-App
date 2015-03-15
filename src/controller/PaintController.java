@@ -1,88 +1,70 @@
 package controller;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Point;
 
-import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
-import javax.swing.JPanel;
-import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import model.Ellipse;
 import model.Line;
-import model.Shape;
+import model.PaintMainModel;
 import model.Rectangle;
 import model.ShapeEnum;
 import model.ShapeFactory;
-import view.ButtonMenuView;
+import view.JavaMainView;
 
 import java.awt.event.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-public class PaintController extends JLayeredPane{
+public class PaintController{
 	
 	private static final long serialVersionUID = 1L;
 	
-	private ButtonMenuView btnMenView = new ButtonMenuView();
-	private JPanel btnPanel;
 	private MyMouseAdapter myMouseAdapter = null;
 	private int currentShape = 1;
-	private JSlider shapeThickness;
-	private ArrayList<Shape> shapes = new ArrayList<Shape>();
-	private JLabel thicknessLabel;
 	private float shapeThicknessVal=1;
 	private DecimalFormat dec = new DecimalFormat("#.##");
-	private JComboBox<String> colorComboBox;
 	private Color paintColor = Color.BLACK;
 	private ShapeFactory shapeFactory = new ShapeFactory();
-	private JComboBox<String> shapeNameCombBox;
-	private String shapeInUse;
+	private String shapeInUse = "Line";
+	private PaintMainModel model;
+	private ArrayList<observer.Observer> observers = new ArrayList<observer.Observer>();
+	private JavaMainView mainView;
 	
 	public PaintController(){
-		this.setVisible(true);
-		this.setLayout(new BorderLayout());
-		
-		btnPanel = btnMenView.getButtonPanel();
-		shapeThickness = btnMenView.getShapeThicknessSlider();
-		thicknessLabel = btnMenView.getThicknessLabel();
-		colorComboBox = btnMenView.getColorList();
-		shapeNameCombBox = btnMenView.getShapeNamesCombBox();
-		
+		model = new PaintMainModel();
+		mainView = new JavaMainView(model);
+		observers.add(mainView);
 		
 		ListenForSlider lstForSlid = new ListenForSlider();
-		shapeThickness.addChangeListener(lstForSlid);
+		mainView.getShapeThickness().addChangeListener(lstForSlid);
 		ActionListenForColorComboBox actLstForColorCombBox = new ActionListenForColorComboBox();
-		colorComboBox.addActionListener(actLstForColorCombBox);
+		mainView.getColorComboBox().addActionListener(actLstForColorCombBox);
 		ActionListenForShapeComboBox actLstForShapeCombBox = new ActionListenForShapeComboBox();
-		shapeNameCombBox.addActionListener(actLstForShapeCombBox);
-		
-		
-		this.add(btnPanel,BorderLayout.SOUTH);
+		mainView.getShapeNameCombBox().addActionListener(actLstForShapeCombBox);
 		
 		myMouseAdapter = new MyMouseAdapter();
-		this.setName("Drawing");
-        addMouseListener(myMouseAdapter);
-        addMouseMotionListener(myMouseAdapter);
+        mainView.setName("Drawing");
+        mainView.addMouseListener(myMouseAdapter);
+        mainView.addMouseMotionListener(myMouseAdapter);
         
-		
+	}
+
+	
+	
+	public JavaMainView getMainView() {
+		return mainView;
+	}
+
+	public void notifyAllObservers(){
+		for(observer.Observer obs : observers){
+			obs.update();
+		}
 	}
 	
-	public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        Graphics2D g2 = (Graphics2D) g;
-        for(Shape s: shapes){
-        	s.paint(g2);
-        }
-    }
-
 	
 	 private class MyMouseAdapter extends MouseAdapter{
 		 
@@ -110,40 +92,45 @@ public class PaintController extends JLayeredPane{
 				 switch (shapeInUse) {
 					case "Line":
 						//Draw a line
-						System.out.println("X1: "+shapeStart.x+" Y1: "+shapeStart.y+" X2: "+me.getX()+" Y2: "+me.getY());
-						Line tempRect = (Line)shapeFactory.getShape(ShapeEnum.LINE); 
-						tempRect.setX(shapeStart.x);
-						tempRect.setY(shapeStart.y);
-						tempRect.setX2(me.getX());
-						tempRect.setY2(me.getY());
-						tempRect.setColor(paintColor);
-						tempRect.setShapeThickness(shapeThicknessVal);
-						shapes.add(tempRect);
+						Line tempLine = (Line)shapeFactory.getShape(ShapeEnum.LINE); 
+						tempLine.setX(shapeStart.x);
+						tempLine.setY(shapeStart.y);
+						tempLine.setX2(me.getX());
+						tempLine.setY2(me.getY());
+						tempLine.setColor(paintColor);
+						tempLine.setShapeThickness(shapeThicknessVal);
+						model.addShape(tempLine);
 						
 						break;
 					case "Ellipse":
 						//Draw a ellipse
-						double widthEllipse = Math.abs(shapeStart.x - me.getX());
-		                double heightEllipse = Math.abs(shapeStart.y - me.getY());
-		                int xEllipse = Math.min(shapeStart.x, me.getX());
-                        int yEllipse = Math.min(shapeStart.y, me.getY());
-						shapes.add(new Ellipse(xEllipse,yEllipse, widthEllipse, heightEllipse, paintColor, shapeThicknessVal));
+						Ellipse tempEllipse = (Ellipse) shapeFactory.getShape(ShapeEnum.ELLIPSE);
+						tempEllipse.setX(Math.min(shapeStart.x, me.getX()));
+						tempEllipse.setY(Math.min(shapeStart.y, me.getY()));
+						tempEllipse.setWidth(Math.abs(shapeStart.x - me.getX()));
+						tempEllipse.setHeight(Math.abs(shapeStart.y - me.getY()));
+						tempEllipse.setColor(paintColor);
+						tempEllipse.setShapeThickness(shapeThicknessVal);
+						model.addShape(tempEllipse);
 						break;
 						
 					case "Rectangle":
 						//Draw a rect
-						double width = Math.abs(shapeStart.x - me.getX());
-		                double height = Math.abs(shapeStart.y - me.getY());
-		                int xRect = Math.min(shapeStart.x, me.getX());
-                        int yRect = Math.min(shapeStart.y, me.getY());
-						shapes.add(new Rectangle(xRect,yRect, width, height,paintColor, shapeThicknessVal));
+						Rectangle tempRect = (Rectangle)shapeFactory.getShape(ShapeEnum.RECTANGLE);
+						tempRect.setX(Math.min(shapeStart.x, me.getX()));
+						tempRect.setY(Math.min(shapeStart.y, me.getY()));
+						tempRect.setWidth(Math.abs(shapeStart.x - me.getX()));
+						tempRect.setHeight(Math.abs(shapeStart.y - me.getY()));
+						tempRect.setColor(paintColor);
+						tempRect.setShapeThickness(shapeThicknessVal);
+						model.addShape(tempRect);
 						break;
 					default:
 						break;
 					} 
 			 }
 			 
-			 repaint();
+			 notifyAllObservers();
 		 }
 		 
 		 
@@ -199,10 +186,10 @@ public class PaintController extends JLayeredPane{
     	 
      	public void stateChanged(ChangeEvent e) {
      		
-     		if(e.getSource() == shapeThickness){
+     		if(e.getSource() == mainView.getShapeThickness()){
      	
-     			thicknessLabel.setText("  Thickness: " + dec.format(shapeThickness.getValue() * .1) );
-     			shapeThicknessVal = (float) (shapeThickness.getValue() * .1);
+     			mainView.getThicknessLabel().setText("  Thickness: " + dec.format(mainView.getShapeThickness().getValue() * .1) );
+     			shapeThicknessVal = (float) (mainView.getShapeThickness().getValue() * .1);
      		}
      	}
      }

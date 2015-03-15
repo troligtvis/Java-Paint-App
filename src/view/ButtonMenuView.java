@@ -11,6 +11,8 @@ public class ButtonMenuView{
 	private static final long serialVersionUID = 1L;
 	
 	private JPanel buttonPanel = new JPanel();
+	JButton undoBtn = new JButton();
+	JButton redoBtn = new JButton();
 	private Box buttonBox = Box.createHorizontalBox();
 	private JSlider shapeThicknessSlider;
 	private String[] colors = {"Black", "Yellow", "Blue", "Green", "Red"};
@@ -22,6 +24,9 @@ public class ButtonMenuView{
 	
 	public ButtonMenuView(){
 		
+		undoBtn.setText("Undo");
+		redoBtn.setText("Redo");
+		
 		shapeThicknessSlider = new JSlider(10,20,10);
 		thicknessLabel.setText(" Thickness: "+(shapeThicknessSlider.getValue()/10));
 		colorList.setSelectedIndex(0);
@@ -29,6 +34,8 @@ public class ButtonMenuView{
 		//Add button to array to get from controller, create listeners
 		
 		
+		buttonBox.add(undoBtn);
+		buttonBox.add(undoBtn);
 		buttonBox.add(colorList);
 		buttonBox.add(shapeNamesCombBox);
 		buttonBox.add(thicknessLabel);
