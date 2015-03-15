@@ -6,7 +6,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
 
-public class Ellipse extends Shape{
+public class Ellipse implements Shape{
 
 	private double x;
 	private double y;
@@ -15,35 +15,21 @@ public class Ellipse extends Shape{
 	private Color color;
 	private float shapeThickness;
 	
-	public Ellipse(){}
-	
-	public Ellipse(double x, double y, double width, double height, Color color, float shapeThickness) {
-		super(x, y, color, shapeThickness);
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
-		this.color = color;
-		this.shapeThickness = shapeThickness;
+	public Ellipse(){
+		System.out.println("New Ellipse is made");
 	}
 	
-	public double getWidth() {
-		return width;
-	}
+	@Override
+	public Shape makeCopy() {
+		System.out.println("New Ellipse is being made");
+		Ellipse ellipseObj = null;
+		try{
+			ellipseObj = (Ellipse) super.clone();
+		} catch(CloneNotSupportedException e){
+			e.printStackTrace();
+		}
 
-
-	public void setWidth(double width) {
-		this.width = width;
-	}
-
-
-	public double getHeight() {
-		return height;
-	}
-
-
-	public void setHeight(double height) {
-		this.height = height;
+		return ellipseObj;
 	}
 
 	public double getX() {
@@ -60,6 +46,22 @@ public class Ellipse extends Shape{
 
 	public void setY(double y) {
 		this.y = y;
+	}
+
+	public double getWidth() {
+		return width;
+	}
+
+	public void setWidth(double width) {
+		this.width = width;
+	}
+
+	public double getHeight() {
+		return height;
+	}
+
+	public void setHeight(double height) {
+		this.height = height;
 	}
 
 	public Color getColor() {
@@ -80,11 +82,9 @@ public class Ellipse extends Shape{
 
 	@Override
 	public void paint(Graphics2D g) {
-		// TODO Auto-generated method stub
 		g.setColor(color);
 		g.setStroke(new BasicStroke(shapeThickness));
 		g.draw(new Ellipse2D.Float((int)x, (int)y, (int)width, (int)height));
-		
 	}
 
 }

@@ -25,6 +25,8 @@ public class JavaMainView  extends JLayeredPane implements Observer{
 	private JComboBox<String> colorComboBox;
 	private JComboBox<String> shapeNameCombBox;
 	private DrawingFrame drawingFrame;
+	private MenuBarView menuBar;
+	private JPanel menuBarFrame = new JPanel();
 	
 	
 	public JavaMainView(PaintMainModel model){
@@ -32,7 +34,8 @@ public class JavaMainView  extends JLayeredPane implements Observer{
 		this.setVisible(true);
 		this.setLayout(new BorderLayout());
 		drawingFrame = new DrawingFrame(model);
-		
+		menuBar = new MenuBarView();
+		menuBarFrame.add(menuBar);
 		JPanel drawingPanel = drawingFrame;
 
 		btnPanel = btnMenView.getButtonPanel();
@@ -41,10 +44,17 @@ public class JavaMainView  extends JLayeredPane implements Observer{
 		colorComboBox = btnMenView.getColorList();
 		shapeNameCombBox = btnMenView.getShapeNamesCombBox();
 		
+		
+		this.add(menuBarFrame, BorderLayout.NORTH);
 		this.add(drawingPanel, BorderLayout.CENTER);
 		this.add(btnPanel,BorderLayout.SOUTH);
 		
 		
+	}
+
+
+	public MenuBarView getMenuBar() {
+		return menuBar;
 	}
 
 

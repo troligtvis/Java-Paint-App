@@ -4,8 +4,11 @@ import java.awt.Color;
 import java.awt.Point;
 
 import javax.swing.JComboBox;
+import javax.swing.JMenuBar;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 
 import model.Ellipse;
 import model.Line;
@@ -33,12 +36,15 @@ public class PaintController{
 	private PaintMainModel model;
 	private ArrayList<observer.Observer> observers = new ArrayList<observer.Observer>();
 	private JavaMainView mainView;
+	private JMenuBar menuBar;
 	
 	public PaintController(){
 		model = new PaintMainModel();
 		mainView = new JavaMainView(model);
 		observers.add(mainView);
+		menuBar = mainView.getMenuBar();
 		
+		setMenuBarItemListeners();
 		ListenForSlider lstForSlid = new ListenForSlider();
 		mainView.getShapeThickness().addChangeListener(lstForSlid);
 		ActionListenForColorComboBox actLstForColorCombBox = new ActionListenForColorComboBox();
@@ -65,6 +71,48 @@ public class PaintController{
 		}
 	}
 	
+	public void setMenuBarItemListeners(){
+		MenuBarListener menuBarListener = new MenuBarListener();
+		menuBar.getMenu(0).getItem(0).addActionListener(menuBarListener);
+		menuBar.getMenu(0).getItem(1).addActionListener(menuBarListener);
+		menuBar.getMenu(0).getItem(2).addActionListener(menuBarListener);
+		menuBar.getMenu(1).getItem(0).addActionListener(menuBarListener);
+		menuBar.getMenu(1).getItem(1).addActionListener(menuBarListener);
+	}
+	
+	
+	private class MenuBarListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			String action = e.getActionCommand();
+			
+			switch (action) {
+			case "New":
+				model.newCanvas();
+				notifyAllObservers();
+				break;
+			case "Save":
+				//Save canvas, remember to save model so you can resume everything
+				break;
+			case "Load":
+				
+				break;
+			case "Undo":
+				model.undo();
+				notifyAllObservers();
+				break;
+			case "Redo":
+				model.redo();
+				notifyAllObservers();
+				break;
+			default:
+				break;
+			}
+		}
+
+	}
 	
 	 private class MyMouseAdapter extends MouseAdapter{
 		 
@@ -86,13 +134,17 @@ public class PaintController{
 			 
 		 }
 		 
+		 Line line = new Line();
+		 Ellipse ellipse = new Ellipse();
+		 Rectangle rect = new Rectangle();
+		 
 		 @Override
 		 public void mouseReleased(MouseEvent me){
 			 if(shapeStart != null){ //Needed to prevent previous cords
 				 switch (shapeInUse) {
 					case "Line":
 						//Draw a line
-						Line tempLine = (Line)shapeFactory.getShape(ShapeEnum.LINE); 
+						Line tempLine = (Line)shapeFactory.getClone((line)); 
 						tempLine.setX(shapeStart.x);
 						tempLine.setY(shapeStart.y);
 						tempLine.setX2(me.getX());
@@ -104,7 +156,7 @@ public class PaintController{
 						break;
 					case "Ellipse":
 						//Draw a ellipse
-						Ellipse tempEllipse = (Ellipse) shapeFactory.getShape(ShapeEnum.ELLIPSE);
+						Ellipse tempEllipse = (Ellipse) shapeFactory.getClone(ellipse);
 						tempEllipse.setX(Math.min(shapeStart.x, me.getX()));
 						tempEllipse.setY(Math.min(shapeStart.y, me.getY()));
 						tempEllipse.setWidth(Math.abs(shapeStart.x - me.getX()));
@@ -116,7 +168,7 @@ public class PaintController{
 						
 					case "Rectangle":
 						//Draw a rect
-						Rectangle tempRect = (Rectangle)shapeFactory.getShape(ShapeEnum.RECTANGLE);
+						Rectangle tempRect = (Rectangle)shapeFactory.getClone(rect);
 						tempRect.setX(Math.min(shapeStart.x, me.getX()));
 						tempRect.setY(Math.min(shapeStart.y, me.getY()));
 						tempRect.setWidth(Math.abs(shapeStart.x - me.getX()));
