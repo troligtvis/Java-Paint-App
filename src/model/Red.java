@@ -1,11 +1,14 @@
 package model;
 
-public class Red implements Color {
+import java.awt.Color;
+
+public class Red implements ShapeColor {
 
 	@Override
-	public void paint() {
-		
+	public Color paint() {
 		System.out.println("Fix red color");
+		
+		return Color.RED;
 	}
 	
 }

@@ -10,10 +10,13 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
+import model.AbstractFactory;
 import model.Ellipse;
+import model.FactoryProducer;
 import model.Line;
 import model.PaintMainModel;
 import model.Rectangle;
+import model.ShapeColorEnum;
 import model.ShapeEnum;
 import model.ShapeFactory;
 import view.JavaMainView;
@@ -31,12 +34,13 @@ public class PaintController{
 	private float shapeThicknessVal=1;
 	private DecimalFormat dec = new DecimalFormat("#.##");
 	private Color paintColor = Color.BLACK;
-	private ShapeFactory shapeFactory = new ShapeFactory();
 	private String shapeInUse = "Line";
 	private PaintMainModel model;
 	private ArrayList<observer.Observer> observers = new ArrayList<observer.Observer>();
 	private JavaMainView mainView;
 	private JMenuBar menuBar;
+	private AbstractFactory shapeFactory;
+	private AbstractFactory colorFactory;
 	
 	public PaintController(){
 		model = new PaintMainModel();
@@ -56,6 +60,10 @@ public class PaintController{
         mainView.setName("Drawing");
         mainView.addMouseListener(myMouseAdapter);
         mainView.addMouseMotionListener(myMouseAdapter);
+        
+        //Create abstractfactory
+        shapeFactory = FactoryProducer.getFactory("Shape");
+        colorFactory = FactoryProducer.getFactory("Color");
         
 	}
 
@@ -144,7 +152,7 @@ public class PaintController{
 				 switch (shapeInUse) {
 					case "Line":
 						//Draw a line
-						Line tempLine = (Line)shapeFactory.getClone((line)); 
+						Line tempLine = (Line)shapeFactory.getClone(line); 
 						tempLine.setX(shapeStart.x);
 						tempLine.setY(shapeStart.y);
 						tempLine.setX2(me.getX());
@@ -188,30 +196,6 @@ public class PaintController{
 		 
 	 }
 	 
-	 public void checkWhatColor(String strColor){
-		 switch (strColor) {
-		case "Black":
-			paintColor = Color.BLACK;
-			break;
-		case "Yellow":
-			paintColor = Color.YELLOW;
-			break;
-		case "Blue":
-			paintColor = Color.BLUE;
-			break;
-		case "Green":
-			paintColor = Color.GREEN;
-			break;
-		case "Red":
-			paintColor = Color.RED;
-			break;
-		default:
-			paintColor = Color.BLACK;
-			break;
-		}
-	 }
-	 
-	 
 	 private class ActionListenForShapeComboBox implements ActionListener{
 
 		@Override
@@ -228,7 +212,26 @@ public class PaintController{
 		public void actionPerformed(ActionEvent e) {
 			JComboBox<String> tempCb = (JComboBox<String>)e.getSource();
 			String color = (String) tempCb.getSelectedItem();
-			checkWhatColor(color);
+			switch (color) {
+			case "Black":
+				paintColor = colorFactory.getColor(ShapeColorEnum.BLACK).paint();
+				break;
+			case "Blue":
+				paintColor = colorFactory.getColor(ShapeColorEnum.BLUE).paint();
+				break;
+			case "Green":
+				paintColor = colorFactory.getColor(ShapeColorEnum.GREEN).paint();
+				break;
+			case "Yellow":
+				paintColor = colorFactory.getColor(ShapeColorEnum.YELLOW).paint();
+				break;
+			case "Red":
+				paintColor = colorFactory.getColor(ShapeColorEnum.RED).paint();
+				break;
+				
+			default:
+				break;
+			}
 			
 		}
 		 
