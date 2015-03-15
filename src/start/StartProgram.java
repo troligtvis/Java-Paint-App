@@ -19,7 +19,7 @@ public class StartProgram {
 	
 	private static void createAndShowUI(){
 		JFrame frame = new JFrame();
-		frame.setResizable(true);
+		frame.setResizable(false);
 		frame.setSize(800,600);
 		frame.setTitle("Java Paint");
 		frame.setBackground(Color.WHITE);

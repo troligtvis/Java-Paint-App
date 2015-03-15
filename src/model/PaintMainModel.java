@@ -22,12 +22,17 @@ public class PaintMainModel implements Action{
 	
 	@Override
 	public void undo(){
-		undo.add(shapes.remove(shapes.size()-1));
+		if(shapes.size() > 0){
+			undo.add(shapes.remove(shapes.size()-1));
+		}
 	}
 	
 	@Override
 	public void redo(){
-		shapes.add(undo.remove(undo.size()-1));
+		if(undo.size() > 0){
+			shapes.add(undo.remove(undo.size()-1));
+		}
+
 	}
 	
 	public void newCanvas(){

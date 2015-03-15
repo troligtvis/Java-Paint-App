@@ -86,4 +86,28 @@ public class Line implements Shape{
 		g.draw(new Line2D.Float((int)x, (int)y, (int)x2, (int)y2));
 	}
 
+	@Override
+	public double getWidth() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public double getHeight() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void setWidth(double width) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setHeight(double height) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

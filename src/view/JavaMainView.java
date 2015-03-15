@@ -3,9 +3,11 @@ package view;
 import java.awt.BorderLayout;
 
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 
@@ -27,7 +29,8 @@ public class JavaMainView  extends JLayeredPane implements Observer{
 	private DrawingFrame drawingFrame;
 	private MenuBarView menuBar;
 	private JPanel menuBarFrame = new JPanel();
-	
+	private JPanel editPanel;
+	private JDialog jDialogEdit = new JDialog();
 	
 	public JavaMainView(PaintMainModel model){
 		this.model = model;
@@ -37,7 +40,9 @@ public class JavaMainView  extends JLayeredPane implements Observer{
 		menuBar = new MenuBarView();
 		menuBarFrame.add(menuBar);
 		JPanel drawingPanel = drawingFrame;
-
+		editPanel = new EditPanelView();
+		
+		
 		btnPanel = btnMenView.getButtonPanel();
 		shapeThickness = btnMenView.getShapeThicknessSlider();
 		thicknessLabel = btnMenView.getThicknessLabel();
@@ -51,7 +56,19 @@ public class JavaMainView  extends JLayeredPane implements Observer{
 		
 		
 	}
+	
+	public void editBox(){
+		jDialogEdit.setSize(400, 100);
+		jDialogEdit.setResizable(false);
+		jDialogEdit.setLocationRelativeTo(null);
+		jDialogEdit.getContentPane().add(editPanel, BorderLayout.SOUTH);
+		jDialogEdit.setVisible(true);
+	}
 
+
+	public JDialog getjDialogEdit() {
+		return jDialogEdit;
+	}
 
 	public MenuBarView getMenuBar() {
 		return menuBar;

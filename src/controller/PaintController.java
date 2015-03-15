@@ -4,11 +4,10 @@ import java.awt.Color;
 import java.awt.Point;
 
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JMenuBar;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.event.MenuEvent;
-import javax.swing.event.MenuListener;
 
 import model.AbstractFactory;
 import model.Ellipse;
@@ -16,9 +15,8 @@ import model.FactoryProducer;
 import model.Line;
 import model.PaintMainModel;
 import model.Rectangle;
+import model.Shape;
 import model.ShapeColorEnum;
-import model.ShapeEnum;
-import model.ShapeFactory;
 import view.JavaMainView;
 
 import java.awt.event.*;
@@ -27,6 +25,7 @@ import java.util.ArrayList;
 
 public class PaintController{
 	
+	@SuppressWarnings("unused")
 	private static final long serialVersionUID = 1L;
 	
 	private MyMouseAdapter myMouseAdapter = null;
@@ -41,12 +40,15 @@ public class PaintController{
 	private JMenuBar menuBar;
 	private AbstractFactory shapeFactory;
 	private AbstractFactory colorFactory;
+	private JDialog jDialogEdit;
 	
 	public PaintController(){
 		model = new PaintMainModel();
 		mainView = new JavaMainView(model);
 		observers.add(mainView);
 		menuBar = mainView.getMenuBar();
+		jDialogEdit = mainView.getjDialogEdit();
+		
 		
 		setMenuBarItemListeners();
 		ListenForSlider lstForSlid = new ListenForSlider();
@@ -124,12 +126,13 @@ public class PaintController{
 	
 	 private class MyMouseAdapter extends MouseAdapter{
 		 
-		 Point shapeStart, shapeEnd;
+		 @SuppressWarnings("unused")
+		Point shapeStart, shapeEnd;
 		 
 		 @Override
 		 public void mousePressed(MouseEvent me) {
 			 String compID = me.getComponent().getName();
-			 
+			 System.out.println(me.getButton());
 			 switch (compID) {
 		 	case "Drawing":
 				System.out.println("Drawing shape: "+currentShape);
@@ -193,13 +196,30 @@ public class PaintController{
 			 notifyAllObservers();
 		 }
 		 
-		 
+		 @Override
+		 public void mouseClicked(MouseEvent me){
+			 int xCord = me.getX();
+			 int yCord = me.getY();
+			 Shape shape;
+			 int pos = 0;
+			 for(Shape s : model.getShapeList()){
+				 pos++;
+				 if((xCord > s.getX() && xCord < (s.getX()+s.getWidth())) && (yCord > s.getY()+menuBar.getHeight() && yCord < s.getY()+s.getHeight()+menuBar.getHeight())){
+					 mainView.editBox();
+					 shape = s;
+					 break;
+				 }
+			 }
+			 
+		 }
 	 }
+	 
 	 
 	 private class ActionListenForShapeComboBox implements ActionListener{
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			@SuppressWarnings("unchecked")
 			JComboBox<String> tempCb = (JComboBox<String>)e.getSource();
 			shapeInUse = (String) tempCb.getSelectedItem();
 			System.out.println(shapeInUse);
@@ -210,6 +230,7 @@ public class PaintController{
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			@SuppressWarnings("unchecked")
 			JComboBox<String> tempCb = (JComboBox<String>)e.getSource();
 			String color = (String) tempCb.getSelectedItem();
 			switch (color) {
